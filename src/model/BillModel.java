@@ -3,8 +3,6 @@ package model;
 import java.util.Date;
 import java.util.List;
 
-import model.BillDetailModel;
-
 public class BillModel {
     private int id;
     private int id_Customer;
@@ -55,7 +53,7 @@ public class BillModel {
         this.id_Table = id_Table;
     }
 
-    public Date getDateBill() {
+    public java.sql.Date getDateBill() {
         return dateBill;
     }
 
