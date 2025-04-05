@@ -138,7 +138,7 @@ public class BillDAO {
     }
 
     public boolean deleteBill(int id) throws SQLException{
-        billDetailDAO.deleteBillDetailsByBillId(id);
+        billDetailDAO.deleteBillDetailByID(id);
         String sql = "DELETE FROM HoaDon WHERE ID_HoaDon = ?";
         try (Connection con = DatabaseConnection.getConnection();
         PreparedStatement ps = con.prepareStatement(sql)) {

@@ -38,7 +38,7 @@ public class CustomerModel {
         this.name = name;
     }
 
-    public Date getJoinDate() {
+    public java.sql.Date getJoinDate() {
         return joinDate;
     }
 

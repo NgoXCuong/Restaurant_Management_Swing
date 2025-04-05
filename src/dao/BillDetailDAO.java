@@ -15,7 +15,7 @@ public class BillDetailDAO {
     private static final Connection con = DatabaseConnection.getConnection();
     private DishDAO dishDAO = new DishDAO();
 
-    public List<BillDetailModel> getAllBillDetailsByID(int id_Bill) {
+    public List<BillDetailModel> getBillDetailsByBillID(int id_Bill) {
         List<BillDetailModel> billDetails = new ArrayList<BillDetailModel>();
         String sql = "SELECT * FROM CTHD WHERE ID_HoaDon = ?";
 

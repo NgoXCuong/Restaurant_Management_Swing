@@ -43,7 +43,7 @@ public class EmployeeModel {
         this.name = name;
     }
 
-    public Date getHireDate() {
+    public java.sql.Date getHireDate() {
         return hireDate;
     }
 
