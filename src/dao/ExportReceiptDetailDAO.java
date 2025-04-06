@@ -1,7 +1,7 @@
 package dao;
 
 import model.ExportReceiptDetailModel;
-import model.Ingredient;
+import model.IngredientModel;
 import util.DatabaseConnection;
 
 import java.sql.Connection;
@@ -29,7 +29,7 @@ public class ExportReceiptDetailDAO {
                     ExportReceiptDetailModel detail = extractDetailFromResultSet(rs);
 
                     // Load ingredient information
-                    Ingredient ingredient = ingredientDAO.getIngredientById(detail.getIngredientId());
+                    IngredientModel ingredient = ingredientDAO.getIngredientById(detail.getId_Ingredient());
                     detail.setIngredient(ingredient);
 
                     details.add(detail);
