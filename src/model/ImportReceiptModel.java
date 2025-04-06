@@ -3,17 +3,17 @@ package model;
 import java.util.Date;
 import java.util.List;
 
-public class ImportReceipt {
+public class ImportReceiptModel {
     private int id_Import;
     private int id_Employee;
     private Date date_Import;
     private int total;
     private List<ImportReceiptDetailModel> details;
 
-    public ImportReceipt() {
+    public ImportReceiptModel() {
     }
 
-    public ImportReceipt(int id_Import, int id_Employee, Date date_Import, int total) {
+    public ImportReceiptModel(int id_Import, int id_Employee, Date date_Import, int total) {
         this.id_Import = id_Import;
         this.id_Employee = id_Employee;
         this.date_Import = date_Import;
@@ -36,8 +36,8 @@ public class ImportReceipt {
         this.id_Employee = id_Employee;
     }
 
-    public Date getDate_Import() {
-        return date_Import;
+    public java.sql.Date getDate_Import() {
+        return (java.sql.Date) date_Import;
     }
 
     public void setDate_Import(Date date_Import) {

@@ -39,7 +39,7 @@ public class CustomerModel {
     }
 
     public java.sql.Date getJoinDate() {
-        return joinDate;
+        return (java.sql.Date) joinDate;
     }
 
     public void setJoinDate(Date joinDate) {

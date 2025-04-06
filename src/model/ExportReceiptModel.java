@@ -34,8 +34,8 @@ public class ExportReceiptModel {
         this.id_Employee = id_Employee;
     }
 
-    public Date getDate_Export() {
-        return date_Export;
+    public java.sql.Date getDate_Export() {
+        return (java.sql.Date) date_Export;
     }
 
     public void setDate_Export(Date date_Export) {

@@ -4,7 +4,7 @@ public class ExportReceiptDetailModel {
     private int id_Export;
     private int id_Ingredient;
     private int quantity;
-    private Ingredient ingredient;
+    private IngredientModel ingredient;
 
     public ExportReceiptDetailModel() {
     }
@@ -39,11 +39,11 @@ public class ExportReceiptDetailModel {
         this.quantity = quantity;
     }
 
-    public Ingredient getIngredient() {
+    public IngredientModel getIngredient() {
         return ingredient;
     }
 
-    public void setIngredient(Ingredient ingredient) {
+    public void setIngredient(IngredientModel ingredient) {
         this.ingredient = ingredient;
     }
 

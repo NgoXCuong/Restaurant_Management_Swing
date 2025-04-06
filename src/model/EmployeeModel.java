@@ -44,7 +44,7 @@ public class EmployeeModel {
     }
 
     public java.sql.Date getHireDate() {
-        return hireDate;
+        return (java.sql.Date) hireDate;
     }
 
     public void setHireDate(Date hireDate) {

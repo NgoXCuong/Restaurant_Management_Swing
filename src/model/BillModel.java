@@ -54,7 +54,7 @@ public class BillModel {
     }
 
     public java.sql.Date getDateBill() {
-        return dateBill;
+        return (java.sql.Date) dateBill;
     }
 
     public void setDateBill(Date dateBill) {

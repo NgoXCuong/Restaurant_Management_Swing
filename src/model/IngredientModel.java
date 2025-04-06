@@ -1,6 +1,6 @@
 package model;
 
-public class Ingredient {
+public class IngredientModel {
     private int id_Ingredient;
     private String name;
     private int price;
@@ -8,10 +8,10 @@ public class Ingredient {
     // private int stock; // Cổ phần
 
 
-    public Ingredient() {
+    public IngredientModel() {
     }
 
-    public Ingredient(int id_Ingredient, String name, int price, String unit) {
+    public IngredientModel(int id_Ingredient, String name, int price, String unit) {
         this.id_Ingredient = id_Ingredient;
         this.name = name;
         this.price = price;

@@ -5,7 +5,7 @@ public class ImportReceiptDetailModel {
     private int id_Ingredients;
     private int quantity;
     private int subTotal;
-    private Ingredient ingredient;
+    private IngredientModel ingredient;
 
     public ImportReceiptDetailModel() {
     }
@@ -49,11 +49,11 @@ public class ImportReceiptDetailModel {
         this.subTotal = subTotal;
     }
 
-    public Ingredient getIngredient() {
+    public IngredientModel getIngredient() {
         return ingredient;
     }
 
-    public void setIngredient(Ingredient ingredient) {
+    public void setIngredient(IngredientModel ingredient) {
         this.ingredient = ingredient;
     }
 
