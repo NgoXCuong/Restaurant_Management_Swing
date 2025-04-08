@@ -12,7 +12,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
 public class LoginView extends JPanel {
-    private Main mainFrame;
+    private MainFrame mainFrame;
     private JTextField emailField;
     private JPasswordField passwordField;
     private JButton loginButton;
@@ -145,8 +145,8 @@ public class LoginView extends JPanel {
 
         UserModel user = userDao.authenticate(email, password);
         if(user != null) {
-//            mainFrame.loginSuccessful(user);
-            JOptionPane.showMessageDialog(this, "Thanh cong", "Success", JOptionPane.INFORMATION_MESSAGE);
+            mainFrame.loginSuccessful(user);
+//            JOptionPane.showMessageDialog(this, "Thanh cong", "Success", JOptionPane.INFORMATION_MESSAGE);
         } else {
             JOptionPane.showMessageDialog(this, "❌ Email hoặc mật khẩu không hợp lệ!", "Error", JOptionPane.ERROR_MESSAGE);
         }
