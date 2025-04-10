@@ -1,15 +1,11 @@
 package view;
 
-import com.sun.tools.javac.Main;
 import dao.UserDao;
 import model.UserModel;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+import java.awt.event.*;
 
 public class LoginView extends JPanel {
     private MainFrame mainFrame;
@@ -18,255 +14,120 @@ public class LoginView extends JPanel {
     private JButton loginButton;
     private JButton registerButton;
 
-    private Font fontXl = new Font("Arial", Font.BOLD, 30);
-    private Font fontL = new Font("Arial", Font.BOLD, 25);
-    private Font fontS = new Font("Arial", Font.PLAIN, 20);
+    private Font fontXl = new Font("Segoe UI", Font.BOLD, 32);
+    private Font fontL = new Font("Segoe UI", Font.BOLD, 24);
+    private Font fontS = new Font("Segoe UI", Font.PLAIN, 18);
 
-    private Color bg = new Color(2, 69, 156);
-    private Color bgF = new Color(82, 80, 80);
+    private Color bg = new Color(52, 73, 94);
+    private Color bgF = new Color(149, 165, 166);
+    private Color textColor = new Color(44, 62, 80);
 
     private UserDao userDao;
 
+    public LoginView(MainFrame mainFrame) {
+        this.mainFrame = mainFrame;
+        this.userDao = new UserDao();
+        initComponents();
+    }
+
     public LoginView() {
-        userDao = new UserDao();
+        this.userDao = new UserDao();
+        initComponents();
+    }
 
+    private void initComponents() {
         setLayout(new BorderLayout());
+        setBackground(Color.WHITE);
 
-        // Tao tieu de logo
         JPanel logoPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
         logoPanel.setBackground(bg);
 
         JLabel logoLabel = new JLabel("HỆ THỐNG QUẢN LÝ NHÀ HÀNG");
-        logoLabel.setForeground(Color.WHITE); // Sửa chỗ này, setForeground cho label
+        logoLabel.setForeground(Color.WHITE);
         logoLabel.setFont(fontXl);
-        logoLabel.setBorder(BorderFactory.createEmptyBorder(50, 5, 50, 5));
-
+        logoLabel.setBorder(BorderFactory.createEmptyBorder(40, 10, 40, 10));
         logoPanel.add(logoLabel);
 
-        // Tao form Login
         JPanel formPanel = new JPanel(new GridBagLayout());
         formPanel.setBackground(Color.WHITE);
         formPanel.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createEmptyBorder(150, 300, 150, 300),
-                BorderFactory.createLineBorder(bgF)
+                BorderFactory.createEmptyBorder(80, 250, 80, 250),
+                BorderFactory.createLineBorder(bgF, 2)
         ));
 
         GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets = new Insets(15, 20, 15, 20);
+        gbc.insets = new Insets(10, 10, 10, 10);
         gbc.fill = GridBagConstraints.HORIZONTAL;
 
-        JLabel titleLabel = new JLabel("LOGIN");
+        JLabel titleLabel = new JLabel("ĐĂNG NHẬP");
         titleLabel.setFont(fontL);
-        titleLabel.setBorder(BorderFactory.createEmptyBorder(0, 0, 60, 0));
+        titleLabel.setForeground(textColor);
         titleLabel.setHorizontalAlignment(SwingConstants.CENTER);
-        titleLabel.setForeground(Color.BLACK);
 
-        ImageIcon emailIcon = new ImageIcon(getClass().getResource("/icons/mail.png"));
-        JLabel emailLable = new JLabel("Email: ", emailIcon, JLabel.LEFT);
-        emailLable.setFont(fontS);
-        emailField = new JTextField(20);
-        emailField.setFont(fontS);
-
-        ImageIcon passIcon = new ImageIcon(getClass().getResource("/icons/pass.png"));
-        JLabel passwordLable = new JLabel("Password: ", passIcon, JLabel.LEFT);
-        passwordLable.setFont(fontS);
-        passwordField = new JPasswordField(20);
-        passwordField.setFont(fontS);
-
-        loginButton = createStyledButton("Đăng nhập", new Color(39, 174, 96));
-        registerButton = createStyledButton("Đăng ký", new Color(161, 98, 3));
-
-        // Them su kien vao nut
-        loginButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {login();}
-        });
-
-        registerButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {showRegisterDialog();}
-        });
-
-
-        // Them giao dien vao form
         gbc.gridx = 0;
         gbc.gridy = 0;
         gbc.gridwidth = 2;
         formPanel.add(titleLabel, gbc);
 
-        gbc.gridx = 0;
-        gbc.gridy = 1;
         gbc.gridwidth = 1;
-        formPanel.add(emailLable, gbc);
+        gbc.gridy++;
+        formPanel.add(createLabelWithIcon("Email:", "/icons/mail.png"), gbc);
 
         gbc.gridx = 1;
-        gbc.gridy = 1;
+        emailField = new JTextField(20);
+        emailField.setFont(fontS);
         formPanel.add(emailField, gbc);
 
         gbc.gridx = 0;
-        gbc.gridy = 2;
-        formPanel.add(passwordLable, gbc);
+        gbc.gridy++;
+        formPanel.add(createLabelWithIcon("Mật khẩu:", "/icons/pass.png"), gbc);
 
         gbc.gridx = 1;
-        gbc.gridy = 2;
-        formPanel.add(passwordField, gbc);
-
-        JPanel btPanel = new JPanel(new GridLayout(1,  2, 10, 10));
-        btPanel.setBackground(Color.WHITE);
-        btPanel.add(loginButton);
-        btPanel.add(registerButton);
-
-        gbc.gridx = 0;
-        gbc.gridy = 3;
-        gbc.gridwidth = 2;
-        formPanel.add(btPanel, gbc);
-
-        JPanel mainPanel = new JPanel(new BorderLayout());
-        mainPanel.add(logoPanel, BorderLayout.NORTH);
-
-//        JPanel wrapperPanel = new JPanel(new GridBagLayout());
-        JPanel wrapperPanel = new JPanel(new GridLayout());
-        wrapperPanel.setBackground(Color.WHITE);
-        wrapperPanel.add(formPanel);
-
-        mainPanel.add(wrapperPanel, BorderLayout.CENTER);
-
-        add(mainPanel);
-    }
-    
-    private void login() {
-        String email = emailField.getText().trim();
-        String password = new String(passwordField.getPassword()).trim();
-        
-        if(email.isEmpty() || password.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "⚠️ Vui lòng không để trống email hoặc password!", "Error", JOptionPane.ERROR_MESSAGE);
-            return;
-        }
-
-        UserModel user = userDao.authenticate(email, password);
-        if(user != null) {
-            mainFrame.loginSuccessful(user);
-//            JOptionPane.showMessageDialog(this, "Thanh cong", "Success", JOptionPane.INFORMATION_MESSAGE);
-        } else {
-            JOptionPane.showMessageDialog(this, "❌ Email hoặc mật khẩu không hợp lệ!", "Error", JOptionPane.ERROR_MESSAGE);
-        }
-    }
-
-    public void showRegisterDialog() {
-        JDialog dialog = new JDialog((Frame) SwingUtilities.getWindowAncestor(this), "Đăng ký", true);
-        dialog.setLayout(new BorderLayout());
-        dialog.setSize(500, 400);
-        dialog.setLocationRelativeTo(this);
-
-        // Tiêu đề
-        JLabel titleLabel = new JLabel("REGISTER");
-        titleLabel.setFont(fontL);
-        titleLabel.setBorder(BorderFactory.createEmptyBorder(20, 0, 20, 0));
-        titleLabel.setHorizontalAlignment(SwingConstants.CENTER);
-        titleLabel.setForeground(Color.BLACK);
-        dialog.add(titleLabel, BorderLayout.NORTH);
-
-        // Form Panel
-        JPanel formPanel = new JPanel(new GridLayout(3, 2, 10, 10));
-        formPanel.setBorder(BorderFactory.createEmptyBorder(20, 30, 20, 30));
-
-        // Các trường nhập liệu
-        emailField = new JTextField(20);
-        emailField.setFont(fontS);
         passwordField = new JPasswordField(20);
         passwordField.setFont(fontS);
-        JPasswordField confirmPasswordField = new JPasswordField(20);
-        confirmPasswordField.setFont(fontS);
+        formPanel.add(passwordField, gbc);
 
-        // Icon và Label
-        ImageIcon emailIcon = new ImageIcon(getClass().getResource("/icons/mail.png"));
-        JLabel emailLabel = new JLabel("Email: ", emailIcon, JLabel.LEFT);
-        emailLabel.setFont(fontS);
+        gbc.gridx = 0;
+        gbc.gridy++;
+        gbc.gridwidth = 2;
 
-        ImageIcon passIcon = new ImageIcon(getClass().getResource("/icons/pass.png"));
-        JLabel passwordLabel = new JLabel("Mật khẩu:", passIcon, JLabel.LEFT);
-        passwordLabel.setFont(fontS);
-        JLabel confirmPasswordLabel = new JLabel("Nhập lại mật khẩu:", passIcon, JLabel.LEFT);
-        confirmPasswordLabel.setFont(fontS);
+        JPanel buttonPanel = new JPanel(new GridLayout(1, 2, 20, 0));
+        buttonPanel.setBackground(Color.WHITE);
 
-        // Thêm vào form với padding
-        formPanel.add(emailLabel);
-        formPanel.add(createPaddedField(emailField));
-        formPanel.add(passwordLabel);
-        formPanel.add(createPaddedField(passwordField));
-        formPanel.add(confirmPasswordLabel);
-        formPanel.add(createPaddedField(confirmPasswordField));
-        dialog.add(formPanel, BorderLayout.CENTER);
+        loginButton = createStyledButton("Đăng nhập", new Color(39, 174, 96));
+        loginButton.setForeground(textColor);
+        registerButton = createStyledButton("Đăng ký", new Color(41, 128, 185));
+        registerButton.setForeground(textColor);
 
-        JPanel btPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 15, 10));
+        loginButton.addActionListener(e -> login());
+        registerButton.addActionListener(e -> showRegisterDialog());
 
-        // Tạo nút với style riêng
-        JButton regisBt = createStyledButton("Đăng ký", new Color(39, 174, 96));
-        JButton cancelBt = createStyledButton("Hủy", new Color(192, 57, 43));
+        buttonPanel.add(loginButton);
+        buttonPanel.add(registerButton);
+        formPanel.add(buttonPanel, gbc);
 
-        btPanel.add(regisBt);
-        btPanel.add(cancelBt);
+        JPanel centerPanel = new JPanel(new GridBagLayout());
+        centerPanel.setBackground(Color.WHITE);
+        centerPanel.add(formPanel);
 
-
-        regisBt.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                String email = emailField.getText().trim();
-                String password = new String(passwordField.getPassword()).trim();
-                String confirmPassword = new String(confirmPasswordField.getPassword()).trim();
-
-                if(email.isEmpty() || password.isEmpty() || confirmPassword.isEmpty()) {
-                    JOptionPane.showMessageDialog(dialog, "⚠️ Vui lòng không để trống!", "Error", JOptionPane.ERROR_MESSAGE);
-                    return;
-                }
-
-                if(!password.equals(confirmPassword)) {
-                    JOptionPane.showMessageDialog(dialog, "❌ Mật khẩu không trùng khớp!", "Error", JOptionPane.ERROR_MESSAGE);
-                    return;
-                }
-
-                UserModel user = new UserModel();
-                user.setId_User(userDao.getNextId());
-                user.setEmail(email);
-                user.setPassword(password);
-                user.setRole("Khach Hang");
-
-                if(userDao.addUser(user)) {
-                    JOptionPane.showMessageDialog(dialog, "✅ Đăng ký thành công!", "Success", JOptionPane.INFORMATION_MESSAGE);
-                    dialog.dispose();
-                } else {
-                    JOptionPane.showMessageDialog(dialog, "❌ Đăng ký thất bại!", "Error", JOptionPane.ERROR_MESSAGE);
-                }
-            }
-        });
-
-        cancelBt.addActionListener(new ActionListener() {
-           @Override
-           public void actionPerformed(ActionEvent e) {dialog.dispose();}
-        });
-
-        btPanel.add(regisBt);
-        btPanel.add(cancelBt);
-
-        dialog.add(formPanel, BorderLayout.CENTER);
-        dialog.add(btPanel, BorderLayout.SOUTH);
-        dialog.setVisible(true);
+        add(logoPanel, BorderLayout.NORTH);
+        add(centerPanel, BorderLayout.CENTER);
     }
 
-    private JPanel createPaddedField(JComponent field) {
-        JPanel panel = new JPanel(new BorderLayout());
-        panel.setBorder(BorderFactory.createEmptyBorder(5, 0, 0, 0)); // đẩy field xuống
-        panel.add(field, BorderLayout.CENTER);
-        return panel;
+    private JLabel createLabelWithIcon(String text, String iconPath) {
+        ImageIcon icon = new ImageIcon(getClass().getResource(iconPath));
+        JLabel label = new JLabel(text, icon, JLabel.LEFT);
+        label.setFont(fontS);
+        return label;
     }
 
-    // Tao nut
     private JButton createStyledButton(String text, Color bgColor) {
         JButton button = new JButton(text);
         button.setFont(fontS);
         button.setBackground(bgColor);
+        button.setForeground(Color.WHITE);
         button.setFocusPainted(false);
-        button.setBorder(BorderFactory.createEmptyBorder(8, 15, 8, 15)); // Padding cho nút đẹp hơn
+        button.setBorder(BorderFactory.createEmptyBorder(10, 15, 10, 15));
 
         button.addMouseListener(new MouseAdapter() {
             public void mouseEntered(MouseEvent e) {
@@ -278,39 +139,42 @@ public class LoginView extends JPanel {
             }
         });
 
-
         return button;
     }
 
+    private void login() {
+        String email = emailField.getText().trim();
+        String password = new String(passwordField.getPassword()).trim();
 
+        if (email.isEmpty() || password.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "⚠️ Vui lòng nhập đầy đủ email và mật khẩu.", "Lỗi", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
 
+        UserModel user = userDao.authenticate(email, password);
+        if (user != null) {
+            if (mainFrame != null) mainFrame.loginSuccessful(user);
+        } else {
+            JOptionPane.showMessageDialog(this, "❌ Email hoặc mật khẩu không đúng!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+        }
+    }
 
-
-
-
-
-
-
-
-
-
-
-
-
+    public void showRegisterDialog() {
+        RegisterView dialog = new RegisterView(mainFrame != null ? mainFrame : new JFrame());
+        dialog.setVisible(true);
+    }
 
     public static void main(String[] args) {
-        // Thiết lập giao diện hệ thống
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-        // Chạy giao diện trên luồng sự kiện
         SwingUtilities.invokeLater(() -> {
-            JFrame frame = new JFrame("Test LoginView");
+            JFrame frame = new JFrame("Đăng nhập hệ thống");
             frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-            frame.setSize(1300, 800);
+            frame.setSize(1200, 700);
             frame.setLocationRelativeTo(null);
             frame.setContentPane(new LoginView());
             frame.setVisible(true);

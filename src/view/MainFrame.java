@@ -6,14 +6,16 @@ import model.UserModel;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 public class MainFrame extends JFrame {
+
     private Font fontXl = new Font("Arial", Font.BOLD, 30);
     private Font fontL = new Font("Arial", Font.BOLD, 25);
     private Font fontS = new Font("Arial", Font.PLAIN, 20);
 
-    private Color bg = new Color(2, 69, 156);
-    private Color bgF = new Color(82, 80, 80);
+    private Color bg = new Color(52, 73, 94);
 
     private JPanel contentPanel;
     private JPanel sidebarPanel;
@@ -21,10 +23,6 @@ public class MainFrame extends JFrame {
 
     private UserModel userModel;
     private EmployeeModel employeeModel;
-
-    // Khai bao giao dien
-    private LoginView loginView;
-//    private DashboardView dashboardView;
 
     public MainFrame() {
         setTitle("HỆ THỐNG QUẢN LÝ NHÀ HÀNG");
@@ -36,7 +34,7 @@ public class MainFrame extends JFrame {
         cardLayout = new CardLayout();
         contentPanel.setLayout(cardLayout);
 
-        loginView = new LoginView();
+        LoginView loginView = new LoginView(this); // đúng cách
         contentPanel.add(loginView, "Login");
 
         cardLayout.show(contentPanel, "Login");
@@ -45,17 +43,15 @@ public class MainFrame extends JFrame {
         setVisible(true);
     }
 
-
-    public void loginSuccessful(UserModel user){
+    public void loginSuccessful(UserModel user) {
         this.userModel = user;
 
-        if("Nhan Vien".equals(userModel.getRole()) || "Quan Ly".equals(userModel.getRole())){
-            EmployeeDAO  employeeDAO = new EmployeeDAO();
+        if ("Nhan Vien".equals(userModel.getRole()) || "Quan Ly".equals(userModel.getRole())) {
+            EmployeeDAO employeeDAO = new EmployeeDAO();
             employeeModel = employeeDAO.getEmployeeByIdUser(userModel.getId_User());
         }
 
         initializePanels();
-
         createSidebar();
 
         getContentPane().removeAll();
@@ -68,29 +64,107 @@ public class MainFrame extends JFrame {
 
         cardLayout.show(contentPanel, "dashboard");
 
-        // Refresh
         revalidate();
         repaint();
     }
 
     private void initializePanels() {
-
+        DashboardView dashboardView = new DashboardView(); // Tạo view mẫu
+        contentPanel.add(dashboardView, "dashboard");
     }
 
     private void createSidebar() {
         sidebarPanel = new JPanel();
-        sidebarPanel.setPreferredSize(new Dimension(100, getHeight()));
+        sidebarPanel.setPreferredSize(new Dimension(250, getHeight()));
         sidebarPanel.setLayout(new BoxLayout(sidebarPanel, BoxLayout.Y_AXIS));
         sidebarPanel.setBackground(bg);
 
         JLabel logoLabel = new JLabel("Quản lý nhà hàng");
-        logoLabel.setFont(fontL);
+        logoLabel.setFont(fontS);
         logoLabel.setForeground(Color.WHITE);
         logoLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-        logoLabel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+        logoLabel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
+        sidebarPanel.add(Box.createVerticalStrut(20));
         sidebarPanel.add(logoLabel);
+        sidebarPanel.add(Box.createVerticalStrut(20));
 
+        addMenuItem("Dashboard", "dashboard", true);
+        addMenuItem("Đăng xuất", "logout", false);
+    }
 
+    private void addMenuItem(String text, String panelName, boolean isSwitchPanel) {
+        JPanel menuItemPanel = new JPanel(new BorderLayout());
+        menuItemPanel.setMaximumSize(new Dimension(250, 50));
+        menuItemPanel.setBackground(bg);
+        menuItemPanel.setCursor(new Cursor(Cursor.HAND_CURSOR));
+
+        JLabel menuLabel = new JLabel(text);
+        menuLabel.setForeground(Color.WHITE);
+        menuLabel.setFont(fontS);
+        menuLabel.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
+
+        menuItemPanel.add(menuLabel, BorderLayout.CENTER);
+
+        menuItemPanel.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if ("logout".equals(panelName)) {
+                    logout();
+                } else {
+                    cardLayout.show(contentPanel, panelName);
+                }
+            }
+
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                menuItemPanel.setBackground(new Color(41, 128, 185));
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+                menuItemPanel.setBackground(bg);
+            }
+        });
+
+        sidebarPanel.add(menuItemPanel);
+    }
+
+    private void logout() {
+        int confirm = JOptionPane.showConfirmDialog(this, "Bạn chắc chắn muốn đăng xuất?",
+                "Xác nhận đăng xuất", JOptionPane.YES_NO_OPTION);
+
+        if (confirm == JOptionPane.YES_OPTION) {
+            userModel = null;
+            employeeModel = null;
+
+            getContentPane().removeAll();
+            contentPanel = new JPanel(cardLayout);
+            LoginView loginView = new LoginView(this);
+            contentPanel.add(loginView, "Login");
+            cardLayout.show(contentPanel, "Login");
+
+            getContentPane().add(contentPanel);
+            revalidate();
+            repaint();
+        }
+    }
+
+    public UserModel getCurrentUser() {
+        return userModel;
+    }
+
+    public EmployeeModel getCurrentEmployee() {
+        return employeeModel;
+    }
+
+    public static void main(String[] args) {
+        try {
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+        } catch (Exception e) {
+            System.err.println("Lỗi: " + e.getMessage());
+        }
+
+        SwingUtilities.invokeLater(() -> new MainFrame().setVisible(true));
     }
 }

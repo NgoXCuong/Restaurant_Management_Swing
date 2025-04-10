@@ -152,4 +152,49 @@ public class UserDao {
         }
         return 100; // Default starting ID
     }
+
+    public UserModel getUserByEmail(String email) {
+        String sql = "SELECT * FROM NguoiDung WHERE Email = ?";
+
+        try (PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setString(1, email);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    UserModel user = new UserModel();
+                    user.setId_User(rs.getInt("ID_ND"));
+                    user.setEmail(rs.getString("Email"));
+                    user.setPassword(rs.getString("MatKhau"));
+                    user.setVerifyCode(rs.getString("VerifyCode"));
+                    user.setStatus(rs.getString("Trangthai"));
+                    user.setRole(rs.getString("Vaitro"));
+                    return user;
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("Lỗi khi lấy người dùng theo email: " + e.getMessage());
+        }
+
+        return null;
+    }
+
+    public boolean register(UserModel user) {
+        String sql = "INSERT INTO NguoiDung (ID_ND, Email, MatKhau, VerifyCode, Trangthai, Vaitro) VALUES (?, ?, ?, ?, ?, ?)";
+
+        try (PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setInt(1, getNextId()); // Tự động lấy ID tiếp theo
+            ps.setString(2, user.getEmail());
+            ps.setString(3, user.getPassword());
+            ps.setString(4, user.getVerifyCode());
+            ps.setString(5, user.getStatus());
+            ps.setString(6, user.getRole());
+
+            int rowsAffected = ps.executeUpdate();
+            return rowsAffected > 0;
+        } catch (SQLException e) {
+            System.err.println("Lỗi đăng ký người dùng: " + e.getMessage());
+            return false;
+        }
+    }
+
 }
