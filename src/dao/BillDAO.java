@@ -30,22 +30,23 @@ public class BillDAO {
         return bill;
     }
 
-    public List<BillModel> getAllBills() throws SQLException {
+    public List<BillModel> getAllBills() {
         List<BillModel> bills = new ArrayList<>();
         String sql = "SELECT * FROM HoaDon";
 
         try (Connection con = DatabaseConnection.getConnection();
-        PreparedStatement ps = con.prepareStatement(sql);
-        ResultSet rs = ps.executeQuery()) {
+             PreparedStatement ps = con.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
             while (rs.next()) {
                 BillModel bill = extractBill(rs);
                 bills.add(bill);
             }
         } catch (SQLException e) {
-             System.err.println("Lỗi lấy tất cả hóa đơn:" + e.getMessage());
+            System.err.println("Lỗi lấy tất cả hóa đơn: " + e.getMessage());
         }
         return bills;
     }
+
 
     public  List<BillModel> getBillById_Cus(int id_Customer) throws SQLException{
         List<BillModel> bills = new ArrayList<>();

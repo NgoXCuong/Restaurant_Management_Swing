@@ -69,7 +69,7 @@ public class MainFrame extends JFrame {
     }
 
     private void initializePanels() {
-        DashboardView dashboardView = new DashboardView(); // Tạo view mẫu
+        DashboardView dashboardView = new DashboardView(this); // Tạo view mẫu
         contentPanel.add(dashboardView, "dashboard");
     }
 
