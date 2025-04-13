@@ -11,9 +11,9 @@ import java.awt.event.MouseEvent;
 
 public class MainFrame extends JFrame {
 
-    private Font fontXl = new Font("Arial", Font.BOLD, 30);
-    private Font fontL = new Font("Arial", Font.BOLD, 25);
-    private Font fontS = new Font("Arial", Font.PLAIN, 20);
+    private Font fontXl = new Font("Segoe UI", Font.BOLD, 32);
+    private Font fontL = new Font("Segoe UI", Font.BOLD, 24);
+    private Font fontS = new Font("Segoe UI", Font.PLAIN, 18);
 
     private Color bg = new Color(52, 73, 94);
 

@@ -16,7 +16,7 @@ public class CustomerDAO {
 
     public List<CustomerModel> getAllCustomers() {
         List<CustomerModel> customers = new ArrayList<>();
-        String sql = "SELECT * FORM KhachHang";
+        String sql = "SELECT * FROM KhachHang";
 
         try(PreparedStatement ps = con.prepareStatement(sql);
             ResultSet rs = ps.executeQuery()) {

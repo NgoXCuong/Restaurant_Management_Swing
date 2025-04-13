@@ -12,6 +12,14 @@ import java.util.*;
 import java.util.List;
 
 public class DashboardView extends JPanel {
+    private Font fontXl = new Font("Segoe UI", Font.BOLD, 32);
+    private Font fontL = new Font("Segoe UI", Font.BOLD, 24);
+    private Font fontS = new Font("Segoe UI", Font.PLAIN, 18);
+
+    private Color bg = new Color(52, 73, 94);
+    private Color bgF = new Color(149, 165, 166);
+    private Color textColor = new Color(44, 62, 80);
+
     private MainFrame mainFrame;
     private BillDAO billDao;
     private DishDAO dishDao;
@@ -37,7 +45,7 @@ public class DashboardView extends JPanel {
 
     private JPanel createWelcomePanel() {
         JPanel panel = new JPanel(new BorderLayout());
-        panel.setBackground(new Color(245, 245, 245));
+        panel.setBackground(Color.WHITE);
         panel.setPreferredSize(new Dimension(getWidth(), 80));
 
         UserModel currentUser = mainFrame.getCurrentUser();
@@ -54,13 +62,13 @@ public class DashboardView extends JPanel {
         }
 
         JLabel welcomeLabel = new JLabel(welcomeMessage);
-        welcomeLabel.setFont(new Font("Segoe UI", Font.BOLD, 24));
-        welcomeLabel.setForeground(new Color(52, 73, 94));
+        welcomeLabel.setFont(fontL);
+        welcomeLabel.setForeground(bg);
         welcomeLabel.setBorder(BorderFactory.createEmptyBorder(10, 20, 0, 0));
 
         JLabel dateLabel = new JLabel(new SimpleDateFormat("EEEE, dd MMMM yyyy", new Locale("vi", "VN")).format(new Date()));
         dateLabel.setFont(new Font("Segoe UI", Font.PLAIN, 14));
-        dateLabel.setForeground(new Color(120, 120, 120));
+        dateLabel.setForeground(bgF);
         dateLabel.setBorder(BorderFactory.createEmptyBorder(0, 20, 10, 0));
 
         panel.add(welcomeLabel, BorderLayout.NORTH);
@@ -117,7 +125,7 @@ public class DashboardView extends JPanel {
     }
 
     private JPanel createStatCard(String title, String value, Color color, Icon icon) {
-        JPanel panel = new RoundedPanel(20);
+        JPanel panel = new RoundedBaseView(20);
         panel.setBackground(color);
         panel.setLayout(new BorderLayout());
         panel.setBorder(BorderFactory.createEmptyBorder(10, 15, 10, 15));
@@ -130,11 +138,12 @@ public class DashboardView extends JPanel {
 
         JLabel titleLabel = new JLabel(title);
         titleLabel.setForeground(Color.WHITE);
-        titleLabel.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+//====================================//
+        titleLabel.setFont(fontS);
 
         JLabel valueLabel = new JLabel(value);
         valueLabel.setForeground(Color.WHITE);
-        valueLabel.setFont(new Font("Segoe UI", Font.BOLD, 26));
+        valueLabel.setFont(fontL);
 
         textPanel.add(titleLabel);
         textPanel.add(valueLabel);
@@ -149,7 +158,7 @@ public class DashboardView extends JPanel {
         panel.setBackground(Color.WHITE);
         panel.setBorder(BorderFactory.createTitledBorder("Đơn hàng gần đây"));
 
-        String[] cols = {"Mã HĐ", "Bàn", "Ngày", "Tổng", "Trạng thái"};
+        String[] cols = {"Mã HĐ", "Bàn", "Ngày", "Tổng tiền", "Trạng thái"};
         DefaultTableModel model = new DefaultTableModel(cols, 0) {
             public boolean isCellEditable(int r, int c) { return false; }
         };
@@ -172,7 +181,7 @@ public class DashboardView extends JPanel {
     private JPanel createPopularDishesPanel() {
         JPanel panel = new JPanel(new BorderLayout());
         panel.setBackground(Color.WHITE);
-        panel.setBorder(BorderFactory.createTitledBorder("Món ăn được gọi nhiều"));
+        panel.setBorder(BorderFactory.createTitledBorder("Món ăn được order nhiều"));
 
         String[] cols = {"Tên món", "Loại", "Giá", "Lượt gọi"};
         DefaultTableModel model = new DefaultTableModel(cols, 0) {
@@ -205,9 +214,9 @@ public class DashboardView extends JPanel {
     private JPanel createLowStockPanel() {
         JPanel panel = new JPanel(new BorderLayout());
         panel.setBackground(Color.WHITE);
-        panel.setBorder(BorderFactory.createTitledBorder("Nguyên liệu sắp hết"));
+        panel.setBorder(BorderFactory.createTitledBorder("Nguyên liệu trong kho"));
 
-        String[] cols = {"Mã", "Tên",  "Đơn vị", "Trạng thái"};
+        String[] cols = {"Mã", "Tên",  "Giá", "Đơn vị tính"};
         DefaultTableModel model = new DefaultTableModel(cols, 0) {
             public boolean isCellEditable(int r, int c) { return false; }
         };
@@ -219,18 +228,18 @@ public class DashboardView extends JPanel {
     }
 
     private JPanel createStatCard(String title, String value, Color color) {
-        JPanel panel = new RoundedPanel(20);
+        JPanel panel = new RoundedBaseView(20);
         panel.setBackground(color);
         panel.setLayout(new BorderLayout());
         panel.setBorder(BorderFactory.createEmptyBorder(10, 15, 10, 15));
 
         JLabel titleLabel = new JLabel(title);
         titleLabel.setForeground(Color.WHITE);
-        titleLabel.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+        titleLabel.setFont(fontS);
 
         JLabel valueLabel = new JLabel(value);
         valueLabel.setForeground(Color.WHITE);
-        valueLabel.setFont(new Font("Segoe UI", Font.BOLD, 26));
+        valueLabel.setFont(fontL);
 
         panel.add(titleLabel, BorderLayout.NORTH);
         panel.add(valueLabel, BorderLayout.CENTER);
@@ -238,12 +247,12 @@ public class DashboardView extends JPanel {
     }
 
     private void styleTable(JTable table) {
-        table.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+        table.setFont(fontS);
         table.setRowHeight(28);
-        table.getTableHeader().setFont(new Font("Segoe UI", Font.BOLD, 14));
+        table.getTableHeader().setFont(fontS);
         table.setSelectionBackground(new Color(52, 152, 219));
         table.setSelectionForeground(Color.WHITE);
-        table.setGridColor(new Color(230, 230, 230));
+        table.setGridColor(Color.WHITE);
     }
 
     private String formatCurrency(int amount) {
@@ -251,21 +260,21 @@ public class DashboardView extends JPanel {
     }
 }
 
-class RoundedPanel extends JPanel {
-    private int cornerRadius;
-
-    public RoundedPanel(int radius) {
-        super();
-        this.cornerRadius = radius;
-        setOpaque(false);
-    }
-
-    @Override
-    protected void paintComponent(Graphics g) {
-        Graphics2D g2 = (Graphics2D) g;
-        g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-        g2.setColor(getBackground());
-        g2.fillRoundRect(0, 0, getWidth(), getHeight(), cornerRadius, cornerRadius);
-        super.paintComponent(g);
-    }
-}
+//class RoundedPanel extends JPanel {
+//    private int cornerRadius;
+//
+//    public RoundedPanel(int radius) {
+//        super();
+//        this.cornerRadius = radius;
+//        setOpaque(false);
+//    }
+//
+//    @Override
+//    protected void paintComponent(Graphics g) {
+//        Graphics2D g2 = (Graphics2D) g;
+//        g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+//        g2.setColor(getBackground());
+//        g2.fillRoundRect(0, 0, getWidth(), getHeight(), cornerRadius, cornerRadius);
+//        super.paintComponent(g);
+//    }
+//}

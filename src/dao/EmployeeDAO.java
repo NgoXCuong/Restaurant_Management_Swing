@@ -44,7 +44,7 @@ public class EmployeeDAO {
     }
 
     public EmployeeModel getEmployeeByIdUser(int idUser) {
-        String sql = "SELECT * FROM NhanVien WHERE ID_USER = ?";
+        String sql = "SELECT * FROM NhanVien WHERE ID_ND = ?";
 
         try(PreparedStatement ps = con.prepareStatement(sql)){
             ps.setInt(1, idUser);
