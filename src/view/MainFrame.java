@@ -1,6 +1,7 @@
 package view;
 
 import dao.EmployeeDAO;
+import model.CustomerModel;
 import model.EmployeeModel;
 import model.UserModel;
 
@@ -63,6 +64,7 @@ public class MainFrame extends JFrame {
         getContentPane().add(mainPanel);
 
         cardLayout.show(contentPanel, "dashboard");
+        cardLayout.show(contentPanel, "customer");
 
         revalidate();
         repaint();
@@ -70,12 +72,15 @@ public class MainFrame extends JFrame {
 
     private void initializePanels() {
         DashboardView dashboardView = new DashboardView(this); // Tạo view mẫu
+        CustomerView customerView = new CustomerView(); // Tạo view mẫu
+
         contentPanel.add(dashboardView, "dashboard");
+        contentPanel.add(customerView, "customer");
     }
 
     private void createSidebar() {
         sidebarPanel = new JPanel();
-        sidebarPanel.setPreferredSize(new Dimension(250, getHeight()));
+        sidebarPanel.setPreferredSize(new Dimension(170, getHeight()));
         sidebarPanel.setLayout(new BoxLayout(sidebarPanel, BoxLayout.Y_AXIS));
         sidebarPanel.setBackground(bg);
 
@@ -90,12 +95,13 @@ public class MainFrame extends JFrame {
         sidebarPanel.add(Box.createVerticalStrut(20));
 
         addMenuItem("Dashboard", "dashboard", true);
+        addMenuItem("Khách hàng", "customer", true);
         addMenuItem("Đăng xuất", "logout", false);
     }
 
     private void addMenuItem(String text, String panelName, boolean isSwitchPanel) {
         JPanel menuItemPanel = new JPanel(new BorderLayout());
-        menuItemPanel.setMaximumSize(new Dimension(250, 50));
+        menuItemPanel.setMaximumSize(new Dimension(170, 50));
         menuItemPanel.setBackground(bg);
         menuItemPanel.setCursor(new Cursor(Cursor.HAND_CURSOR));
 
