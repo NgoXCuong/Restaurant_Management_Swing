@@ -84,8 +84,8 @@ public class MainFrame extends JFrame {
         sidebarPanel.setLayout(new BoxLayout(sidebarPanel, BoxLayout.Y_AXIS));
         sidebarPanel.setBackground(bg);
 
-        JLabel logoLabel = new JLabel("Quản lý nhà hàng");
-        logoLabel.setFont(fontS);
+        JLabel logoLabel = new JLabel("Quản lý \n nhà hàng");
+        logoLabel.setFont(fontXl);
         logoLabel.setForeground(Color.WHITE);
         logoLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         logoLabel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
