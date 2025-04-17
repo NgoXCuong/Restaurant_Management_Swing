@@ -6,6 +6,7 @@ import model.CustomerModel;
 import model.UserModel;
 
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -15,174 +16,185 @@ import java.util.Date;
 import java.util.List;
 
 public class CustomerView extends JPanel {
-    private Font fontXl = new Font("Segoe UI", Font.BOLD, 32);
-    private Font fontL = new Font("Segoe UI", Font.BOLD, 24);
-    private Font fontS = new Font("Segoe UI", Font.PLAIN, 18);
+    private final Font fontTitle = new Font("Segoe UI", Font.BOLD, 28);
+    private final Font fontChu = new Font("Segoe UI", Font.BOLD, 18);
+    private final Font fontButton = new Font("Segoe UI", Font.PLAIN, 16);
+    private final Font fontTable = new Font("Segoe UI", Font.PLAIN, 14);
 
-    private Color bg = new Color(52, 73, 94);
+    private final Color primaryColor = new Color(41, 128, 185);
+    private final Color backgroundColor = new Color(236, 240, 241);
+    private final Color buttonColor = new Color(52, 152, 219);
 
-    private  JTable customerTable;
+    private JTable customerTable;
     private DefaultTableModel tableModel;
-    private JButton addBtn, editBtn, deleteBtn, refreshBtn;
     private JTextField searchField;
-    private JButton searchBtn;
-
-    private CustomerDAO cusDao;
-    private UserDao userDao;
+    private final CustomerDAO cusDao = new CustomerDAO();
+    private final UserDao userDao = new UserDao();
 
     public CustomerView() {
-        cusDao = new CustomerDAO();
-        userDao = new UserDao();
-
         setLayout(new BorderLayout());
+        setBackground(backgroundColor);
 
-        JPanel titlePanel = new JPanel();
-        titlePanel.setBackground(bg);
-        titlePanel.setPreferredSize(new Dimension(getWidth(), 60));
-
-        JLabel titleLabel = new JLabel("Khách hàng");
+        // Tiêu đề
+        JLabel titleLabel = new JLabel("Quản lý Khách hàng", SwingConstants.CENTER);
+        titleLabel.setFont(fontTitle);
         titleLabel.setForeground(Color.WHITE);
-        titleLabel.setFont(fontL);
-        titlePanel.add(titleLabel);
+        JPanel titlePanel = new JPanel();
+        titlePanel.setBackground(primaryColor);
+        titlePanel.setPreferredSize(new Dimension(getWidth(), 60));
+        titlePanel.setLayout(new BorderLayout());
+        titlePanel.add(titleLabel, BorderLayout.CENTER);
 
-        JPanel searchPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        searchField = new JTextField(20);
-        searchBtn = new JButton("Search");
-        searchBtn.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                searchCustomers();
-            }
-        });
+        // Panel tìm kiếm
+        JPanel searchPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 10));
+        searchPanel.setBackground(backgroundColor);
+        searchField = new JTextField(25);
+        JButton searchBtn = createStyledButton("Tìm kiếm");
+        searchBtn.setForeground(Color.BLACK);
+        searchBtn.setBackground(Color.MAGENTA);
+        searchBtn.addActionListener(e -> searchCustomers());
 
-        searchPanel.add(new JLabel("Search: "));
-        searchPanel.add(searchBtn);
+        // Label "Tìm:" to và đậm
+        JLabel searchLabel = new JLabel("Tìm:");
+        searchLabel.setForeground(Color.BLACK);
+        searchLabel.setFont(fontChu); // Chữ to hơn
+        searchPanel.add(searchLabel);
+
         searchPanel.add(searchField);
+        searchPanel.add(searchBtn);
 
+        // Bảng dữ liệu
         createTable();
         JScrollPane scrollPane = new JScrollPane(customerTable);
+        scrollPane.setBorder(BorderFactory.createLineBorder(primaryColor, 1));
 
-        JPanel btnPanel = new JPanel();
-        addBtn = new JButton("Thêm");
-        editBtn = new JButton("Sửa");
-        deleteBtn = new JButton("Xóa");
-        refreshBtn = new JButton("Làm mới");
+        // Các nút chức năng
+        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 10));
+        buttonPanel.setBackground(backgroundColor);
 
-        addBtn.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                showAddCustomerDialog();
+        JButton addBtn = createStyledButton("Thêm");
+        addBtn.setForeground(Color.BLACK);
+
+        JButton editBtn = createStyledButton("Sửa");
+        editBtn.setForeground(Color.BLACK);
+
+        JButton deleteBtn = createStyledButton("Xóa");
+        deleteBtn.setForeground(Color.BLACK);
+
+        JButton refreshBtn = createStyledButton("Làm mới");
+        refreshBtn.setForeground(Color.BLACK);
+
+        buttonPanel.add(addBtn);
+        buttonPanel.add(editBtn);
+        buttonPanel.add(deleteBtn);
+        buttonPanel.add(refreshBtn);
+
+        addBtn.addActionListener(e -> showAddCustomerDialog());
+        editBtn.addActionListener(e -> {
+            int selectedRow = customerTable.getSelectedRow();
+            if (selectedRow >= 0) {
+                int cusId = Integer.parseInt(customerTable.getValueAt(selectedRow, 0).toString());
+                showEditCustomerDialog(cusId);
+            } else {
+                JOptionPane.showMessageDialog(this, "Chọn khách hàng cần sửa.", "Thông báo", JOptionPane.WARNING_MESSAGE);
             }
         });
 
-        editBtn.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                int selectedRow = customerTable.getSelectedRow();
-                if (selectedRow >= 0) {
-                    int cusId = Integer.parseInt(customerTable.getValueAt(selectedRow, 0).toString());
-                    showEditCustomerDialog(cusId);
-                } else {
-                    JOptionPane.showMessageDialog(CustomerView.this,
-                            "Hãy lựa chọn khách hàng để sửa", "Thông báo", JOptionPane.WARNING_MESSAGE);
-                }
+        deleteBtn.addActionListener(e -> {
+            int selectedRow = customerTable.getSelectedRow();
+            if (selectedRow >= 0) {
+                int cusId = Integer.parseInt(customerTable.getValueAt(selectedRow, 0).toString());
+                deleteCustomer(cusId);
+            } else {
+                JOptionPane.showMessageDialog(this, "Chọn khách hàng cần xóa.", "Thông báo", JOptionPane.WARNING_MESSAGE);
             }
         });
 
-        deleteBtn.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                int selectedRow = customerTable.getSelectedRow();
-                if (selectedRow >= 0) {
-                    int cusId = Integer.parseInt(customerTable.getValueAt(selectedRow, 0).toString());
-                    deleteCustomer(cusId);
-                } else {
-                    JOptionPane.showMessageDialog(CustomerView.this,
-                            "Hãy lựa chọn khách hàng để xóa", "Thông báo", JOptionPane.WARNING_MESSAGE);
-                }
-            }
-        });
+        refreshBtn.addActionListener(e -> loadCus());
 
-        refreshBtn.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                loadCus();
-            }
-        });
-
-        btnPanel.add(addBtn);
-        btnPanel.add(editBtn);
-        btnPanel.add(deleteBtn);
-        btnPanel.add(refreshBtn);
-
-        add(titlePanel, BorderLayout.NORTH);
+        // Panel chính giữa
         JPanel centerPanel = new JPanel(new BorderLayout());
+        centerPanel.setBackground(backgroundColor);
         centerPanel.add(searchPanel, BorderLayout.NORTH);
         centerPanel.add(scrollPane, BorderLayout.CENTER);
+
+        add(titlePanel, BorderLayout.NORTH);
         add(centerPanel, BorderLayout.CENTER);
-        add(btnPanel, BorderLayout.SOUTH);
+        add(buttonPanel, BorderLayout.SOUTH);
 
         loadCus();
     }
 
     private void createTable() {
-        String[] col = {"ID", "TêN", "Ngày tham gia", "Tổng tiền", "Điển tích lũy", "ID_Người dùng"};
-        tableModel = new DefaultTableModel(col, 0){
+        String[] columns = {"ID", "Tên", "Ngày tham gia", "Tổng tiền", "Điểm tích lũy", "ID Người dùng"};
+        tableModel = new DefaultTableModel(columns, 0) {
             @Override
-            public boolean isCellEditable(int row, int column) {return false;}
+            public boolean isCellEditable(int row, int col) {
+                return false;
+            }
         };
-
         customerTable = new JTable(tableModel);
+        customerTable.setFont(fontTable);
+        customerTable.setRowHeight(24);
+        customerTable.getTableHeader().setFont(fontButton);
+        customerTable.getTableHeader().setBackground(new Color(189, 195, 199));
         customerTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        customerTable.getTableHeader().setReorderingAllowed(false);
     }
 
-    private void loadCus(){
+    private void loadCus() {
         tableModel.setRowCount(0);
-        List<CustomerModel> cus = cusDao.getAllCustomers();
-        SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
-        for(CustomerModel customer : cus){
-            Object[] rowData ={
-                    customer.getId_Customer(),
-                    customer.getName(),
-                    dateFormat.format(customer.getJoinDate()),
-                    customer.getRevenue(),
-                    customer.getPoints(),
-                    customer.getId_User()
+        List<CustomerModel> list = cusDao.getAllCustomers();
+        SimpleDateFormat df = new SimpleDateFormat("dd-MM-yyyy");
+        for (CustomerModel c : list) {
+            Object[] row = {
+                    c.getId_Customer(),
+                    c.getName(),
+                    df.format(c.getJoinDate()),
+                    c.getRevenue(),
+                    c.getPoints(),
+                    c.getId_User()
             };
-            tableModel.addRow(rowData);
+            tableModel.addRow(row);
         }
     }
 
-    private void searchCustomers(){
-        String search = searchField.getText().trim().toLowerCase();
-
-        if(search.isEmpty()){
+    private void searchCustomers() {
+        String keyword = searchField.getText().trim().toLowerCase();
+        if (keyword.isEmpty()) {
             loadCus();
             return;
         }
 
         tableModel.setRowCount(0);
-
-        List<CustomerModel> cus = cusDao.getAllCustomers();
-        SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
-
-        for(CustomerModel customer : cus){
-            if(customer.getName().toLowerCase().contains(search) ||
-                String.valueOf(customer.getId_Customer()).contains(search)){
-                Object[] rowData = {
-                        customer.getId_Customer(),
-                        customer.getName(),
-                        dateFormat.format(customer.getJoinDate()),
-                        customer.getRevenue(),
-                        customer.getPoints(),
-                        customer.getId_User()
+        SimpleDateFormat df = new SimpleDateFormat("dd-MM-yyyy");
+        for (CustomerModel c : cusDao.getAllCustomers()) {
+            if (c.getName().toLowerCase().contains(keyword)
+                    || String.valueOf(c.getId_Customer()).contains(keyword)) {
+                Object[] row = {
+                        c.getId_Customer(),
+                        c.getName(),
+                        df.format(c.getJoinDate()),
+                        c.getRevenue(),
+                        c.getPoints(),
+                        c.getId_User()
                 };
-                tableModel.addRow(rowData);
+                tableModel.addRow(row);
             }
         }
     }
-    private void showAddCustomerDialog() {
+
+    private JButton createStyledButton(String text) {
+        JButton btn = new JButton(text);
+        btn.setFont(fontButton);
+        btn.setFocusPainted(false);
+        btn.setBackground(buttonColor);
+        btn.setForeground(Color.WHITE);
+        btn.setPreferredSize(new Dimension(110, 35));
+        btn.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
+        return btn;
+    }
+
+        private void showAddCustomerDialog() {
         JDialog dialog = new JDialog((Frame) SwingUtilities.getWindowAncestor(this), "Add Customer", true);
         dialog.setLayout(new BorderLayout());
         dialog.setSize(400, 300);
@@ -369,22 +381,17 @@ public class CustomerView extends JPanel {
     }
 
     private void deleteCustomer(int customerId) {
-        int confirm = JOptionPane.showConfirmDialog(this,
-                "Bạn chắc chắn muốn xóa khách hàng?",
-                "Xác nhận xóa", JOptionPane.YES_NO_OPTION);
-
+        int confirm = JOptionPane.showConfirmDialog(this, "Bạn có chắc chắn muốn xóa?", "Xác nhận", JOptionPane.YES_NO_OPTION);
         if (confirm == JOptionPane.YES_OPTION) {
-            CustomerModel customer = cusDao.getCustomerById(customerId);
-            if (customer != null) {
-                int userId = customer.getId_Customer();
-
+            CustomerModel cus = cusDao.getCustomerById(customerId);
+            if (cus != null) {
+                int userId = cus.getId_User();
                 if (cusDao.deleteCus(customerId)) {
-                    // Also delete the user
                     userDao.deleteUser(userId);
-                    JOptionPane.showMessageDialog(this, "Xóa khách hàng thành cônng", "Success", JOptionPane.INFORMATION_MESSAGE);
+                    JOptionPane.showMessageDialog(this, "Xóa thành công", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
                     loadCus();
                 } else {
-                    JOptionPane.showMessageDialog(this, "Xóa khách hàng thất bại", "Error", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(this, "Xóa thất bại", "Lỗi", JOptionPane.ERROR_MESSAGE);
                 }
             }
         }

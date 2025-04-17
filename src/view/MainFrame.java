@@ -65,6 +65,7 @@ public class MainFrame extends JFrame {
 
         cardLayout.show(contentPanel, "dashboard");
         cardLayout.show(contentPanel, "customer");
+        cardLayout.show(contentPanel, "employee");
 
         revalidate();
         repaint();
@@ -73,9 +74,11 @@ public class MainFrame extends JFrame {
     private void initializePanels() {
         DashboardView dashboardView = new DashboardView(this); // Tạo view mẫu
         CustomerView customerView = new CustomerView(); // Tạo view mẫu
+        EmployeeView employeeView = new EmployeeView();
 
         contentPanel.add(dashboardView, "dashboard");
         contentPanel.add(customerView, "customer");
+        contentPanel.add(employeeView, "employee");
     }
 
     private void createSidebar() {
@@ -84,8 +87,9 @@ public class MainFrame extends JFrame {
         sidebarPanel.setLayout(new BoxLayout(sidebarPanel, BoxLayout.Y_AXIS));
         sidebarPanel.setBackground(bg);
 
-        JLabel logoLabel = new JLabel("Quản lý \n nhà hàng");
-        logoLabel.setFont(fontXl);
+        JLabel logoLabel = new JLabel("Quản lý nhà hàng");
+        logoLabel.setFont(fontS);
+        logoLabel.setForeground(Color.GREEN);
         logoLabel.setForeground(Color.WHITE);
         logoLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         logoLabel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
@@ -96,6 +100,8 @@ public class MainFrame extends JFrame {
 
         addMenuItem("Dashboard", "dashboard", true);
         addMenuItem("Khách hàng", "customer", true);
+        addMenuItem("Nhân viên", "employee", true);
+
         addMenuItem("Đăng xuất", "logout", false);
     }
 
