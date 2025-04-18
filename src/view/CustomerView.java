@@ -73,16 +73,12 @@ public class CustomerView extends JPanel {
         buttonPanel.setBackground(backgroundColor);
 
         JButton addBtn = createStyledButton("Thêm");
-        addBtn.setForeground(Color.BLACK);
 
         JButton editBtn = createStyledButton("Sửa");
-        editBtn.setForeground(Color.BLACK);
 
         JButton deleteBtn = createStyledButton("Xóa");
-        deleteBtn.setForeground(Color.BLACK);
 
         JButton refreshBtn = createStyledButton("Làm mới");
-        refreshBtn.setForeground(Color.BLACK);
 
         buttonPanel.add(addBtn);
         buttonPanel.add(editBtn);
@@ -136,7 +132,7 @@ public class CustomerView extends JPanel {
         customerTable = new JTable(tableModel);
         customerTable.setFont(fontTable);
         customerTable.setRowHeight(24);
-        customerTable.getTableHeader().setFont(fontButton);
+        customerTable.getTableHeader().setFont(fontChu);
         customerTable.getTableHeader().setBackground(new Color(189, 195, 199));
         customerTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
     }
@@ -188,7 +184,7 @@ public class CustomerView extends JPanel {
         btn.setFont(fontButton);
         btn.setFocusPainted(false);
         btn.setBackground(buttonColor);
-        btn.setForeground(Color.WHITE);
+        btn.setForeground(Color.BLACK);
         btn.setPreferredSize(new Dimension(110, 35));
         btn.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
         return btn;

@@ -26,38 +26,50 @@ public class EmployeeView extends JPanel {
     private UserDao userDAO;
     private boolean editMode = true;
 
+    private final Font fontTitle = new Font("Segoe UI", Font.BOLD, 28);
+    private final Font fontChu = new Font("Segoe UI", Font.BOLD, 18);
+    private final Font fontButton = new Font("Segoe UI", Font.PLAIN, 16);
+    private final Font fontTable = new Font("Segoe UI", Font.PLAIN, 14);
+
+    private final Color primaryColor = new Color(41, 128, 185);
+    private final Color backgroundColor = new Color(236, 240, 241);
+    private final Color buttonColor = new Color(52, 152, 219);
+
     public EmployeeView() {
         employeeDAO = new EmployeeDAO();
         userDAO = new UserDao();
 
         setLayout(new BorderLayout());
-        setBackground(new Color(245, 245, 245));
+        setBackground(backgroundColor);
 
         // Title Panel with Styling
         JPanel titlePanel = new JPanel();
-        titlePanel.setBackground(new Color(52, 73, 94));
+        titlePanel.setBackground(primaryColor);
         titlePanel.setPreferredSize(new Dimension(getWidth(), 60));
         JLabel titleLabel = new JLabel("Quản lý nhân viên");
         titleLabel.setForeground(Color.WHITE);
-        titleLabel.setFont(new Font("Arial", Font.BOLD, 20));
+        titleLabel.setFont(fontTitle);
         titlePanel.add(titleLabel);
 
         // Search Panel with Enhanced Styling
         JPanel searchPanel = new JPanel();
         searchPanel.setLayout(new FlowLayout(FlowLayout.LEFT, 15, 10));
-        searchPanel.setBackground(new Color(245, 245, 245));
+        searchPanel.setBackground(backgroundColor);
 
         searchField = new JTextField(20);
-        searchField.setFont(new Font("Arial", Font.PLAIN, 14));
-        searchBtn = new JButton("Tìm");
-        searchBtn.setFont(new Font("Arial", Font.BOLD, 14));
-        searchBtn.setBackground(new Color(41, 128, 185));
+        searchField.setFont(fontTable);
+        searchBtn = new JButton("Tìm kiếm");
+        searchBtn.setFont(fontButton);
+        searchBtn.setBackground(primaryColor);
         searchBtn.setForeground(Color.BLACK);
         searchBtn.setFocusPainted(false);
 
         searchBtn.addActionListener(e -> searchEmployees());
 
-        searchPanel.add(new JLabel("Tìm:"));
+        JLabel searchLabel = new JLabel("Tìm: ");
+        searchLabel.setFont(fontChu);
+
+        searchPanel.add(searchLabel);
         searchPanel.add(searchField);
         searchPanel.add(searchBtn);
 
@@ -68,8 +80,8 @@ public class EmployeeView extends JPanel {
 
         // Button Panel with Styled Buttons
         JPanel buttonPanel = new JPanel();
-        buttonPanel.setLayout(new FlowLayout(FlowLayout.LEFT, 15, 10));
-        buttonPanel.setBackground(new Color(245, 245, 245));
+        buttonPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 20, 10));
+        buttonPanel.setBackground(backgroundColor);
 
         addBtn = createButton("Thêm");
         editBtn = createButton("Sửa");
@@ -126,7 +138,7 @@ public class EmployeeView extends JPanel {
         // Add Components to Main Panel
         JPanel centerPanel = new JPanel();
         centerPanel.setLayout(new BorderLayout());
-        centerPanel.setBackground(new Color(245, 245, 245));
+        centerPanel.setBackground(backgroundColor);
         centerPanel.add(searchPanel, BorderLayout.NORTH);
         centerPanel.add(scrollPane, BorderLayout.CENTER);
 
@@ -139,11 +151,13 @@ public class EmployeeView extends JPanel {
 
     private JButton createButton(String text) {
         JButton button = new JButton(text);
-        button.setFont(new Font("Arial", Font.BOLD, 14));
-        button.setBackground(new Color(52, 152, 219));
-        button.setForeground(Color.BLACK);
+        button.setFont(fontButton);
         button.setFocusPainted(false);
-        button.setPreferredSize(new Dimension(150, 40));
+        button.setBackground(buttonColor);
+        button.setForeground(Color.BLACK);
+        button.setPreferredSize(new Dimension(110, 35));
+        button.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
+
         return button;
     }
 
@@ -154,12 +168,12 @@ public class EmployeeView extends JPanel {
 
     private void updateButtonText() {
         if (!editMode) {
-            addBtn.setText("View Employees");
-            editBtn.setText("View Details");
+            addBtn.setText("Xem nhân viên");
+            editBtn.setText("Xem chi tiết");
             deleteBtn.setEnabled(false);
         } else {
-            addBtn.setText("Add Employee");
-            editBtn.setText("Edit Employee");
+            addBtn.setText("Thêm nhân viên");
+            editBtn.setText("Sửa nhân viên");
             deleteBtn.setEnabled(true);
         }
     }
@@ -176,8 +190,9 @@ public class EmployeeView extends JPanel {
         employeeTable = new JTable(tableModel);
         employeeTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         employeeTable.getTableHeader().setReorderingAllowed(false);
-        employeeTable.setFont(new Font("Arial", Font.PLAIN, 14));
+        employeeTable.setFont(fontTable);
         employeeTable.setRowHeight(30);
+        employeeTable.getTableHeader().setFont(fontChu);
         employeeTable.getColumnModel().getColumn(0).setPreferredWidth(50);
         employeeTable.getColumnModel().getColumn(1).setPreferredWidth(150);
         employeeTable.getColumnModel().getColumn(2).setPreferredWidth(100);
@@ -243,11 +258,8 @@ public class EmployeeView extends JPanel {
         String[] positions = {"Quan Ly", "Thu Ngan", "Phuc Vu", "Dau Bep", "Bao Ve"};
         JComboBox<String> positionComboBox = new JComboBox<>(positions);
         JTextField phoneField = new JTextField();
-        JTextField emailField = new JTextField();
-        JTextField addressField = new JTextField();
-        JTextField salaryField = new JTextField();
-        JTextField birthdayField = new JTextField(new SimpleDateFormat("dd-MM-yyyy").format(new Date()));
-        JTextField joinDateField = new JTextField(new SimpleDateFormat("dd-MM-yyyy").format(new Date()));
+//        JTextField emailField = new JTextField();
+          JTextField joinDateField = new JTextField(new SimpleDateFormat("yyyy-MM-dd").format(new Date()));
 
         String[] statuses = {"Dang lam", "Da nghi"};
         JComboBox<String> statusComboBox = new JComboBox<>(statuses);
@@ -275,15 +287,9 @@ public class EmployeeView extends JPanel {
         formPanel.add(positionComboBox);
         formPanel.add(new JLabel("SDT:"));
         formPanel.add(phoneField);
-        formPanel.add(new JLabel("Email:"));
-        formPanel.add(emailField);
-        formPanel.add(new JLabel("Địa chỉ:"));
-        formPanel.add(addressField);
-        formPanel.add(new JLabel("Lương:"));
-        formPanel.add(salaryField);
-        formPanel.add(new JLabel("Ngày sinh (dd-MM-yyyy):"));
-        formPanel.add(birthdayField);
-        formPanel.add(new JLabel("Ngày tham gia (dd-MM-yyyy):"));
+//        formPanel.add(new JLabel("Email:"));
+//        formPanel.add(emailField);
+        formPanel.add(new JLabel("Ngày vào làm (yyyy-MM-dd):"));
         formPanel.add(joinDateField);
         formPanel.add(new JLabel("Tình trạng:"));
         formPanel.add(statusComboBox);
@@ -308,38 +314,24 @@ public class EmployeeView extends JPanel {
                 String name = nameField.getText().trim();
                 String position = (String) positionComboBox.getSelectedItem();
                 String phone = phoneField.getText().trim();
-                String email = emailField.getText().trim();
-                String address = addressField.getText().trim();
-                String salaryText = salaryField.getText().trim();
-                String birthdayText = birthdayField.getText().trim();
+//                String email = emailField.getText().trim();
+//                String address = addressField.getText().trim();
+//                String salaryText = salaryField.getText().trim();
+//                String birthdayText = birthdayField.getText().trim();
                 String joinDateText = joinDateField.getText().trim();
                 String status = (String) statusComboBox.getSelectedItem();
 
-                if (name.isEmpty() || phone.isEmpty() || email.isEmpty() || address.isEmpty() ||
-                        salaryText.isEmpty() || birthdayText.isEmpty() || joinDateText.isEmpty()) {
+                if (name.isEmpty() || phone.isEmpty() || joinDateText.isEmpty()) {
                     JOptionPane.showMessageDialog(dialog, "Làm ơn không bỏ trống", "Thông báo", JOptionPane.WARNING_MESSAGE);
                     return;
                 }
 
-                int salary;
+                Date  joinDate;
+                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
                 try {
-                    salary = Integer.parseInt(salaryText);
-                    if (salary <= 0) {
-                        JOptionPane.showMessageDialog(dialog, "Lương phải lớn hơn 0", "Lỗi", JOptionPane.ERROR_MESSAGE);
-                        return;
-                    }
-                } catch (NumberFormatException ex) {
-                    JOptionPane.showMessageDialog(dialog, "Lương phải là số", "Lỗi", JOptionPane.ERROR_MESSAGE);
-                    return;
-                }
-
-                Date birthday, joinDate;
-                SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
-                try {
-                    birthday = dateFormat.parse(birthdayText);
                     joinDate = dateFormat.parse(joinDateText);
                 } catch (ParseException ex) {
-                    JOptionPane.showMessageDialog(dialog, "Vui lòng nhập ngày hợp lệ (dd-MM-yyyy)", "Lỗi", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(dialog, "Vui lòng nhập ngày hợp lệ (yyyy-MM-dd)", "Lỗi", JOptionPane.ERROR_MESSAGE);
                     return;
                 }
 
@@ -365,7 +357,7 @@ public class EmployeeView extends JPanel {
                     UserModel user = new UserModel();
                     user.setId_User(userDAO.getNextId());
                     user.setPassword(password);
-                    user.setEmail(email);
+//                    user.setEmail(email);
                     user.setRole("Nhan Vien");
 
                     if (userDAO.addUser(user)) {
@@ -420,7 +412,7 @@ public class EmployeeView extends JPanel {
         JPanel detailsPanel = new JPanel(new GridLayout(9, 1, 10, 10));
         detailsPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
-        SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
         JLabel nameLabel = new JLabel("<html><b>Tên:</b> " + employee.getName() + "</html>");
         JLabel positionLabel = new JLabel("<html><b>Chức vụ:</b> " + employee.getPosition() + "</html>");
